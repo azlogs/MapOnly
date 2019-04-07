@@ -91,7 +91,27 @@ MapOnly is a .net standard library (using for .net and .net core), it is simple 
                 .Ignore(x => x.ShowDate)
                 .Ignore(x => x.CreatedUserDisplayname);
    ```
-   
+3. Config for web application<br/>
+ Add MapOnlySetting class in App_Start/MapOnlySetting.cs<br/>
+  ```csharp
+  public static class MapOnlySetting
+    {
+        public static void Register()
+        {
+            MapExtension.Create<Product, ProductViewModel>()
+                .Ignore(x => x.UnitDisplay)
+                .Ignore(p => p.Categories);
+        }
+    }
+    ```
+   Call Register method in Application_Start<br/>
+    ```csharp
+   protected void Application_Start()
+        {
+            //
+            MapOnlySetting.Register();
+        }
+    ```
 ## Support or Contact
 Current version haven't support map 2 collection has difference type yet. I will update in next version.
 Any trouble please raise your issue here
