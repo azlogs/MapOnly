@@ -103,15 +103,13 @@ MapOnly is a .net standard library (using for .net and .net core), it is simple 
                 .Ignore(p => p.Categories);
         }
     }
-    ```
-   Call Register method in Application_Start<br/>
-    ```csharp
+   //Call Register method in Application_Start<br/>
    protected void Application_Start()
         {
             //
             MapOnlySetting.Register();
         }
-    ```
+   ```
 ## Support or Contact
 Current version haven't support map 2 collection has difference type yet. I will update in next version.
 Any trouble please raise your issue here
