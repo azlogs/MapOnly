@@ -49,8 +49,8 @@ MapOnly is a .net standard library (using for .net and .net core), it is simple 
   NewsViewModel newsViewModel = new NewsViewModel();
   news.Map(newsViewModel); // Or MapExtension.Map(news, newsViewModel);
 ```
-2. Ignore property
- There are 2 options to ignore property:
+2. Ignore property and map with difference property name<br/>
+   There are 2 options to ignore property:<br/>
   2.1 Using attribute in destination model
   
   ```csharp
@@ -87,12 +87,13 @@ MapOnly is a .net standard library (using for .net and .net core), it is simple 
    ```csharp
    MapExtension.Create<NewsModel, NewsViewModel>()
                 .Add(source => source.Content, destination => destination.Content)
-                .Add(source => source.Title, destination => destination.Title)
+                .Add(source => source.Title, destination => destination.Title) // can map with difference property name
                 .Ignore(x => x.ShowDate)
                 .Ignore(x => x.CreatedUserDisplayname);
    ```
    
 ## Support or Contact
+Current version haven't support map 2 collection has difference type yet. I will update in next version.
 Any trouble please raise your issue here
 
 ## New feature, new version are comming
