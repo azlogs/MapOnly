@@ -1,37 +1,98 @@
-## Welcome to GitHub Pages
+# MAP ONLY
 
-You can use the [editor on GitHub](https://github.com/phamphuc75/MapOnly/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+MapOnly is a simple map an object to another object
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## How to use?
 
-### Markdown
+1. The destination has the same properties with source object
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+ ```csharp
+  // News Entity
+   public class NewsModel
+    {
+        public Guid Id { get; set; }
 
-```markdown
-Syntax highlighted code block
+        public string Title { get; set; }
 
-# Header 1
-## Header 2
-### Header 3
+        public string Content { get; set; }
 
-- Bulleted
-- List
+        public int ViewNumber { get; set; }
 
-1. Numbered
-2. List
+        public DateTime? ShowDate { get; set; }
 
-**Bold** and _Italic_ and `Code` text
+        public DateTime CreatedDate { get; set; }
 
-[Link](url) and ![Image](src)
+        public DateTime UpdatedDate { get; set; }
+
+        public string CreatedUser { get; set; }
+
+        public string UpdatedUser { get; set; } 
+    }
+    
+   // news View model
+    public class NewsViewModel
+    {
+        public string Title { get; set; }
+
+        public string Content { get; set; }
+
+        public int ViewNumber { get; set; }
+ 
+        public DateTime? ShowDate { get; set; }
+    }
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+ ```csharp
+ using MapOnly;
+ //...
+  var news = newsService.GetById('75ce973c-1813-4ee3-a354-a8348b207b87');
+  NewsViewModel newsViewModel = new NewsViewModel();
+  news.Map(newsViewModel); // Or MapExtension.Map(news, newsViewModel);
+```
+2. Ignore property
+ There are 2 options to ignore property:
+  2.1 Using attribute in destination model
+  
+  ```csharp
+    using MapOnly;
+    // news View model
+    public class NewsViewModel
+    {
+        public string Title { get; set; }
 
-### Jekyll Themes
+        public string Content { get; set; }
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/phamphuc75/MapOnly/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+        public int ViewNumber { get; set; }
+ 
+        public DateTime? ShowDate { get; set; }
+        
+        public string CreatedUser { get; set; }
+        
+        [Map(Ignored = true)]
+        public string CreatedUserDisplayname { 
+          get
+          {
+              if (string.IsNullOrEmpty(CreatedUser) return string.Empty();
+              return userService.GetByUsername(CreatedUser);
+          } 
+        }
+    }
+    
+  var news = newsService.GetById('75ce973c-1813-4ee3-a354-a8348b207b87');
+  NewsViewModel newsViewModel = new NewsViewModel();
+  news.Map(newsViewModel); // Or MapExtension.Map(news, newsViewModel); 
+  ```
+  2.2 Using MapOnly setting:
+  
+   ```csharp
+   MapExtension.Create<NewsModel, NewsViewModel>()
+                .Add(source => source.Content, destination => destination.Content)
+                .Add(source => source.Title, destination => destination.Title)
+                .Ignore(x => x.ShowDate)
+                .Ignore(x => x.CreatedUserDisplayname);
+   ```
+   
+## Support or Contact
+Any trouble please raise your issue here
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## New feature, new version are comming
