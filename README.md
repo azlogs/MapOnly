@@ -1,6 +1,6 @@
 # MAP ONLY
 
-MapOnly is a simple map an object to another object
+MapOnly is a .net standard library (using for .net and .net core), it is simple to map an object to another object
 
 ## How to use?
 
