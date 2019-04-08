@@ -3,7 +3,8 @@
 MapOnly is a .net standard library (using for .net and .net core), it is simple to map an object to another object
 
 ## How to use?
-
+## Download at https://www.nuget.org/packages/MapOnly
+## Install-Package MapOnly -Version 0.0.1
 1. The destination has the same properties with source object
 
  ```csharp
