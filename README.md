@@ -1,20 +1,20 @@
 
-**MappOnly is a simple .Net standard library, It use for convert, mapping from an object to another object.
+##MappOnly is a simple .Net standard library, It use for convert, mapping from an object to another object.
 
-1. Dependences***
+##1. Dependences
 	.Net Framework > 4.6.1
 	.Net standard 2.0
 	.Net Core
 	
-2. Setting
+##2. Setting
 	- Download at https://www.nuget.org/packages/MapOnly<br/>
 	Install by command lines<br/>
 	- *Install-Package MapOnly -Version 0.0.1 ( current version)*<br/>
 	Install by nuget manage<br/>
 	- Search MapOnly -> select project want to install -> click install<br/>
  
-3. How to use?<br/>
- 3.1 Use for mapping 2 objects has the same properties (No need to do any setting )<br/>
+##3. How to use?<br/>
+  3.1 Use for mapping 2 objects has the same properties (No need to do any setting )<br/>
   ex:
   
  ```csharp
