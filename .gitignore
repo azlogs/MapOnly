@@ -1,0 +1,12 @@
+
+MapOnlyDemoExample/.vs/
+MapOnlyDemoExample/packages/
+MapOnlyDemoExample/MapOnlyExample.Model/bin
+MapOnlyDemoExample/MapOnlyExample.Model/obj
+MapOnlyDemoExample/MapOnlyExample.Service/bin
+MapOnlyDemoExample/MapOnlyExample.Service/obj
+MapOnlyDemoExample/MapOnlyExample.WebDemo/bin
+MapOnlyDemoExample/MapOnlyExample.WebDemo/obj
+MapOnlyDemoExample/MapOnlyExample.WinformDemo/bin
+MapOnlyDemoExample/MapOnlyExample.WinformDemo/obj  
+*.dll

@@ -1,0 +1,25 @@
+﻿@model List<MapOnlyExample.Service.ViewModel.UserDetailsViewModel>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Fullname</th>
+            <th>Birthday</th>
+            <th>Address</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.UserName</td>
+            <td>@item.DisplayName</td>
+            <td>@item.BirthdayDisplay</td>
+            <td>@item.Address</td>
+        </tr>
+        }
+    </table>
+   
+</div>
