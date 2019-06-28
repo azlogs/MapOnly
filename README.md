@@ -12,7 +12,7 @@
 # Setup
 ``` 
 1. Download at https://www.nuget.org/packages/MapOnly
-2. Install by command lines: Install-Package MapOnly -Version 0.2.0 ( current version)
+2. Install by command lines: Install-Package MapOnly -Version 0.2.1 ( current version)
 3. Install by nuget manage: Search MapOnly -> select project want to install -> click install
 ```
 
@@ -77,7 +77,7 @@ This method use to convert a object to another object follow setting or auto.
  // a is an instant of Class Destination
  // b is an instant of Class Source
  b.Map(a);
- // or var b = b.Map(a);
+ // or var a = b.Map(a);
 ```
 ### Example
 ```
