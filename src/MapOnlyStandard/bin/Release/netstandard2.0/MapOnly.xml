@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MapOnly</name>
+    </assembly>
+    <members>
+        <member name="T:MapOnly.MapExtension">
+            <summary>
+            Map object extension
+            </summary>
+        </member>
+        <member name="M:MapOnly.MapExtension.SimpleMap``2(``0,``1)">
+            <summary>
+            Mapping 2 objects ( from "source" to "destination") has the same properties
+            </summary>
+            <typeparam name="TSource">Class type of source object</typeparam>
+            <typeparam name="TDestination">Class type of destination object</typeparam>
+            <param name="source">Source Object</param>
+            <param name="destination">Destination Object</param>
+            <returns>Destionation object</returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Map``2(``0,``1)">
+            <summary>
+            Mapping object "source" to "destination", base on the mapping setting
+            </summary>
+            <typeparam name="TSource">Class type of source object</typeparam>
+            <typeparam name="TDestination">Class type of destination object</typeparam>
+            <param name="source">Source Object</param>
+            <param name="destination">Destination Object</param>
+            <returns>Destionation object</returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Create``2">
+            <summary>
+            Create a mapping between Source and destionation
+            </summary>
+            <typeparam name="TSource">Source Type</typeparam>
+            <typeparam name="TDestination">Destination Type</typeparam>
+            <returns>IMapObject</returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Remove``2(MapOnly.Interface.IMapObject{``0,``1})">
+            <summary>
+            Remove a mapping
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TDestination"></typeparam>
+            <param name="mapObject"></param>
+            <returns>IMapObject</returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Ignore``2(MapOnly.Interface.IMapObject{``0,``1},System.Linq.Expressions.Expression{System.Func{``1,System.Object}})">
+            <summary>
+            Add ignored property
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TDestination"></typeparam>
+            <param name="mapObject"></param>
+            <param name="expression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Add``2(MapOnly.Interface.IMapObject{``0,``1},System.Linq.Expressions.Expression{System.Func{``0,System.Object}},System.Linq.Expressions.Expression{System.Func{``1,System.Object}})">
+            <summary>
+            Add property into mapping setting 
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TDestination"></typeparam>
+            <param name="mapObject"></param>
+            <param name="sourceExpression"></param>
+            <param name="destinationExpression"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.Add``2(MapOnly.Interface.IMapObject{``0,``1},System.Linq.Expressions.Expression{System.Func{``1,System.Object}},System.Object)">
+            <summary>
+            Mapping a property to a value
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TDestination"></typeparam>
+            <param name="mapObject"></param>
+            <param name="destinationExpression"></param>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MapOnly.MapExtension.MappAll``2(MapOnly.Interface.IMapObject{``0,``1})">
+            <summary>
+            Ignored all the seting.
+            </summary>
+            <typeparam name="TSource"></typeparam>
+            <typeparam name="TDestination"></typeparam>
+            <param name="mapObject"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

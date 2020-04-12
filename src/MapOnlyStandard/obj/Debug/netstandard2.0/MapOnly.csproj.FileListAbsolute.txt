@@ -1,0 +1,8 @@
+D:\Projects\MapOnly\MapOnlyStandard\bin\Debug\netstandard2.0\MapOnly.deps.json
+D:\Projects\MapOnly\MapOnlyStandard\bin\Debug\netstandard2.0\MapOnly.dll
+D:\Projects\MapOnly\MapOnlyStandard\bin\Debug\netstandard2.0\MapOnly.pdb
+D:\Projects\MapOnly\MapOnlyStandard\obj\Debug\netstandard2.0\MapOnly.csprojAssemblyReference.cache
+D:\Projects\MapOnly\MapOnlyStandard\obj\Debug\netstandard2.0\MapOnly.AssemblyInfoInputs.cache
+D:\Projects\MapOnly\MapOnlyStandard\obj\Debug\netstandard2.0\MapOnly.AssemblyInfo.cs
+D:\Projects\MapOnly\MapOnlyStandard\obj\Debug\netstandard2.0\MapOnly.dll
+D:\Projects\MapOnly\MapOnlyStandard\obj\Debug\netstandard2.0\MapOnly.pdb

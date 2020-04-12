@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <Version>0.2.1</Version>
+    <Authors>Azlogs</Authors>
+    <Description>Simple mapping</Description>
+    <Copyright>Azlogs</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/azlogs/MapOnly/</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/azlogs/MapOnly/master/Icon.ico</PackageIconUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/azlogs/MapOnly/master/LICENSE.txt</PackageLicenseUrl>
+    <Company>https://azlogs.net</Company>
+    <AssemblyVersion>0.2.1.0</AssemblyVersion>
+    <FileVersion>0.2.1.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Projects\MapOnlyDemo\MapOnlyStandard\MapOnly.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>
