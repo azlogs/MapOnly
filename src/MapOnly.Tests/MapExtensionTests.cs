@@ -56,6 +56,29 @@ public class MapExtensionTests : IDisposable
     }
 
     [Fact]
+    public void Map_WithoutDestinationInstance_ShouldCreateAndMapCorrectly()
+    {
+        // Arrange
+        var user = new User
+        {
+            Id = 2,
+            FirstName = "Jane",
+            LastName = "Smith",
+            Email = "jane.smith@example.com"
+        };
+
+        // Act
+        var viewModel = user.Map<User, UserViewModel>();
+
+        // Assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(2, viewModel.Id);
+        Assert.Equal("Jane", viewModel.FirstName);
+        Assert.Equal("Smith", viewModel.LastName);
+        Assert.Equal("jane.smith@example.com", viewModel.Email);
+    }
+
+    [Fact]
     public void Map_BooleanProperty_ShouldMapCorrectly()
     {
         // Arrange

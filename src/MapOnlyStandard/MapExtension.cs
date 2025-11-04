@@ -179,6 +179,26 @@ namespace MapOnly
             return destination;
         }
 
+        /// <summary>
+        /// Maps a source object to a new destination object instance
+        /// </summary>
+        /// <typeparam name="TSource">Class type of source object</typeparam>
+        /// <typeparam name="TDestination">Class type of destination object</typeparam>
+        /// <param name="source">Source Object</param>
+        /// <returns>New destination object with mapped values</returns>
+        public static TDestination Map<TSource, TDestination>(this TSource source)
+            where TSource : class
+            where TDestination : class, new()
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source), SourceDestinationNotNull);
+            }
+
+            var destination = new TDestination();
+            return Map(source, destination);
+        }
+
         #endregion
 
         #region Setting

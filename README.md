@@ -36,6 +36,37 @@ Install-Package MapOnly
 - 🏷️ Attribute-based configuration
 - ✅ Fully tested and documented
 
+## Quick Start
+
+### Basic Usage (No Configuration Required)
+
+For simple object mapping where properties have the same names:
+
+```csharp
+using MapOnly;
+
+// Map using the new instance creation overload (recommended)
+var userDto = user.Map<User, UserDto>();
+
+// Or if you need to map to an existing instance
+var existingDto = new UserDto();
+user.Map(existingDto);
+```
+
+### With Configuration
+
+For custom mappings, configure once at application startup:
+
+```csharp
+// At application startup
+MapExtension.Create<User, UserDto>()
+    .Add(u => u.FullName, dto => dto.DisplayName)
+    .Ignore(dto => dto.InternalField);
+
+// Then use throughout your application
+var userDto = user.Map<User, UserDto>();
+```
+
 ## Methods
 
 ### 1. Create
@@ -107,18 +138,28 @@ Converts one object to another following configured or automatic mappings.
 
 #### Syntax
 ```csharp
-// destination is an instance of DestinationClass
-// source is an instance of SourceClass
-var destination = source.Map(new DestinationClass());
+// Recommended: Automatically create destination instance
+var destination = source.Map<SourceClass, DestinationClass>();
+
+// Alternative: Map to existing instance (useful when updating objects)
+var destination = new DestinationClass();
+source.Map(destination);
 ```
 
 #### Example
 ```csharp
-var user = userViewModel.Map(new User());
-var viewModel = user.Map(new UserDetailsViewModel());
-var userListing = users
-    .Select(user => user.Map(new UserDetailsViewModel()))
+// Simple mapping - automatically creates UserViewModel instance
+var viewModel = user.Map<User, UserViewModel>();
+
+// Map collections
+var userViewModels = users
+    .Select(u => u.Map<User, UserViewModel>())
     .ToList();
+
+// Map to existing instance (e.g., updating an entity)
+var existingUser = GetUserFromDatabase(id);
+userViewModel.Map(existingUser);
+SaveChanges();
 ```
 
 ## Advanced: Attribute-Based Mapping
@@ -137,42 +178,114 @@ public class MyClass
 
 ## Configuration
 
-### Web Applications
-```csharp
-// Create a MapOnlySetting class in App_Start/MapOnlySetting.cs 
-public static class MapOnlySetting
-{
-    public static void Register()
-    {
-        MapExtension.Create<A, A_Display>()
-            .Ignore(x => x.DisplayName)
-            .Add(source => source.Status, destination => destination.ProgressStatus);
-    }
-}
+Configure your mappings once at application startup. MapOnly uses a static configuration that persists throughout your application's lifetime.
 
-// Call Register method in Application_Start
-protected void Application_Start() 
-{  
-    MapOnlySetting.Register(); 
+### ASP.NET Core / Modern .NET
+
+**Program.cs or Startup.cs:**
+```csharp
+// Program.cs (.NET 6+)
+var builder = WebApplication.CreateBuilder(args);
+
+// Configure MapOnly mappings
+ConfigureMappings();
+
+var app = builder.Build();
+app.Run();
+
+static void ConfigureMappings()
+{
+    MapExtension.Create<User, UserDto>()
+        .Add(u => u.FullName, dto => dto.DisplayName)
+        .Ignore(dto => dto.CreatedDate);
+
+    MapExtension.Create<Product, ProductDto>()
+        .Ignore(dto => dto.InternalId);
 }
 ```
 
-### Console/Desktop Applications
+**Or create a dedicated configuration class:**
 ```csharp
-// Add configuration in the Main method in Program.cs
+// MappingConfiguration.cs
+public static class MappingConfiguration
+{
+    public static void Configure()
+    {
+        ConfigureUserMappings();
+        ConfigureProductMappings();
+    }
+
+    private static void ConfigureUserMappings()
+    {
+        MapExtension.Create<User, UserDto>()
+            .Add(u => u.FullName, dto => dto.DisplayName)
+            .Ignore(dto => dto.CreatedDate);
+    }
+
+    private static void ConfigureProductMappings()
+    {
+        MapExtension.Create<Product, ProductDto>()
+            .Ignore(dto => dto.InternalId);
+    }
+}
+
+// Program.cs
+MappingConfiguration.Configure();
+```
+
+### ASP.NET MVC / Web API (.NET Framework)
+
+**Global.asax.cs:**
+```csharp
+protected void Application_Start()
+{
+    // Other configurations...
+    AreaRegistration.RegisterAllAreas();
+    RouteConfig.RegisterRoutes(RouteTable.Routes);
+    
+    // Configure MapOnly
+    MappingConfiguration.Configure();
+}
+```
+
+### Console / Desktop Applications
+
+**Program.cs:**
+```csharp
 static class Program
 {
     [STAThread]
     static void Main()
     {
-        // Configure mappings here
-        MapOnlyConfig.Register();
+        // Configure mappings at startup
+        MappingConfiguration.Configure();
 
+        // Rest of your application
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new fmMain());
-    } 
+        Application.Run(new MainForm());
+    }
 }
+```
+
+### Best Practices
+
+1. **Configure Once, Use Everywhere**: Set up all mappings at application startup
+2. **Organize by Domain**: Group related mappings together in separate methods
+3. **Keep It Simple**: Only configure mappings for properties that differ between source and destination
+4. **Use the Automatic Creation Overload**: Prefer `source.Map<TSource, TDest>()` over `source.Map(new TDest())`
+
+```csharp
+// ✅ Recommended
+var dto = user.Map<User, UserDto>();
+
+// ❌ Less efficient (creates instance before calling Map)
+var dto = user.Map(new UserDto());
+
+// ✅ Good - when you need to update an existing instance
+var existingEntity = repository.Get(id);
+dto.Map(existingEntity);
+repository.Update(existingEntity);
 ```
 
 ## Change Log
