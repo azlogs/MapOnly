@@ -1,34 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Github\\GitHub\\MapOnly\\src\\MapOnlyStandard\\MapOnly.csproj": {}
+    "/home/runner/work/MapOnly/MapOnly/src/MapOnlyStandard/MapOnly.csproj": {}
   },
   "projects": {
-    "D:\\Github\\GitHub\\MapOnly\\src\\MapOnlyStandard\\MapOnly.csproj": {
+    "/home/runner/work/MapOnly/MapOnly/src/MapOnlyStandard/MapOnly.csproj": {
       "version": "0.2.1",
       "restore": {
-        "projectUniqueName": "D:\\Github\\GitHub\\MapOnly\\src\\MapOnlyStandard\\MapOnly.csproj",
+        "projectUniqueName": "/home/runner/work/MapOnly/MapOnly/src/MapOnlyStandard/MapOnly.csproj",
         "projectName": "MapOnly",
-        "projectPath": "D:\\Github\\GitHub\\MapOnly\\src\\MapOnlyStandard\\MapOnly.csproj",
-        "packagesPath": "C:\\Users\\phucp\\.nuget\\packages\\",
-        "outputPath": "D:\\Github\\GitHub\\MapOnly\\src\\MapOnlyStandard\\obj\\",
+        "projectPath": "/home/runner/work/MapOnly/MapOnly/src/MapOnlyStandard/MapOnly.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/MapOnly/MapOnly/src/MapOnlyStandard/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\phucp\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
             "projectReferences": {}
           }
         },
@@ -36,10 +32,17 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
           "dependencies": {
             "NETStandard.Library": {
               "suppressParent": "All",
@@ -54,11 +57,12 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.306/RuntimeIdentifierGraph.json"
         }
       }
     }
