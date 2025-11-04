@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MapOnly
 {
-    internal class MapSetting
+    internal sealed class MapSetting
     { 
         public MapSetting()
         {
@@ -12,11 +12,11 @@ namespace MapOnly
             IsMapAll = true;
         }
 
-        public string PropertyName { get; set; }
+        public string? PropertyName { get; set; }
 
-        public Type Source { get; set; }
+        public Type? Source { get; set; }
 
-        public Type Destination { get; set; }
+        public Type? Destination { get; set; }
 
         public List<string> IgnoreProperties { get; private set; }
 
@@ -32,18 +32,18 @@ namespace MapOnly
         }
     }
 
-    internal class MapProperty
+    internal sealed class MapProperty
     {
-        public string FromProperty { get; set; }
+        public string? FromProperty { get; set; }
 
-        public string ToProperty { get; set; }
+        public string? ToProperty { get; set; }
 
         public MapType MapType { get; set; }
 
-        public  object Value { get; set; }
+        public object? Value { get; set; }
     }
 
-    enum MapType
+    internal enum MapType
     {
         MapProperty = 0,
         MapValue = 1

@@ -1,24 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0</TargetFrameworks>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <Version>0.2.1</Version>
+    <Version>0.3.0</Version>
     <Authors>Azlogs</Authors>
-    <Description>Simple mapping</Description>
+    <Description>A simple and lightweight .NET object mapping library. MapOnly provides easy-to-use APIs for converting objects between different types with minimal configuration.</Description>
     <Copyright>Azlogs</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/azlogs/MapOnly/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/azlogs/MapOnly/master/Icon.ico</PackageIconUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/azlogs/MapOnly/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>Icon.jpg</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/azlogs/MapOnly</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>mapper;mapping;object-mapper;automapper;simple-mapper;dotnet</PackageTags>
     <Company>https://azlogs.net</Company>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <FileVersion>0.3.0.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Projects\MapOnlyDemo\MapOnlyStandard\MapOnly.xml</DocumentationFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Include="Icon.jpg" Pack="true" PackagePath="/" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
 
 </Project>
