@@ -1,0 +1,151 @@
+
+# Welcome to MapOnly Documentation
+
+## Introduction
+
+**MapOnly** is a simple and lightweight .NET library for object-to-object mapping. If you need a straightforward library focused solely on mapping without extra complexity, MapOnly is the perfect choice for you.
+
+## Requirements
+
+- .NET Standard 2.0+
+- .NET Standard 2.1+
+- .NET 6.0+
+- .NET 8.0+
+- .NET Framework 4.6.1+
+
+## Installation
+
+```bash
+# Using .NET CLI
+dotnet add package MapOnly
+
+# Using Package Manager Console
+Install-Package MapOnly -Version 0.3.0
+
+# Or search "MapOnly" in NuGet Package Manager
+```
+
+## Features
+
+- ✨ Simple and intuitive API
+- 🚀 Lightweight with minimal dependencies
+- 🎯 Automatic property mapping by name
+- 🔧 Custom property mappings
+- 🚫 Property ignore functionality
+- 💎 Support for constant values
+- 🏷️ Attribute-based configuration
+- ✅ Fully tested and documented
+
+## Methods
+### 1. Create
+This method uses to create a mapping between 2 classes. If the classes had the same properties no need to do create a mapping. **MapOnly** automatic find and do the mapping.
+
+### Syntax
+```
+using MapOnly;
+...
+MapExtension.Create<ClassSource, ClassDestination>()
+...
+``` 
+### Example
+```
+MapExtension.Create<UserViewModel, User>()
+``` 
+## 2. Add
+
+Normally, If the classes had the same properties name and the same data type, no need to use this method. This method uses to declare with **MapOnly**  a property of ClassSource mapping to a property of ClassDestination. or A property of ClassDestination mapping to a value.
+
+### Syntax
+```
+using MapOnly;
+...
+MapExtension.Create<ClassSource, ClassDestination>().Add(a => a.Property1,b => b.Property2);
+MapExtension.Create<ClassSource, ClassDestination>().Add(b => b.Property1,"Value");
+...
+```
+### Example
+```
+MapExtension.Create<UserViewModel, User>()
+			.Add(v => v.DisplayName, u => u.FullName)
+			.Add(u.CreatedBy, "Admin"); // Version 0.2.0
+```
+## 3. Ignore
+In the case, class Destination and class Source have some properties are different or we don't want to do the mapping for the properties.  We can use the **Ignore** method.
+
+### Syntax
+```
+using MapOnly;
+...
+MapExtension.Create<ClassSource, ClassDestination>().Ingore(b => b.Property1); 
+...
+```
+### Example
+```
+MapExtension.Create<UserViewModel, User>()
+                .Add(x =>x.Birthday, a => a.UpdatedDate)
+                .Ignore(u => u.CreatedDate)
+                .Ignore(u => u.CreatedUser)
+                .Ignore(u => u.IsActive)
+                .Ignore(u => u.UpdatedDate)
+                .Ignore(u => u.UpdatedUser);
+``` 
+## 4. Map
+This method use to convert a object to another object follow setting or auto.
+
+### Syntax
+```
+ // a is an instant of Class Destination
+ // b is an instant of Class Source
+ b.Map(a);
+ // or var a = b.Map(a);
+```
+### Example
+```
+ var user = userViewModel.Map(new User());
+ var viewModel = user.Map(new UserDetailsViewModel());
+ var userListing = users
+                  .Select(user => user.Map(new UserDetailsViewModel()))
+                  .ToList();
+``` 
+
+# Config
+If between two classes had the properties need to ignore, or not mapping, or properties the same type but not the same name. We need to create mapping before we call the Map method.
+## Web
+```
+  // Create a MapOnlySetting class in App_Start/MapOnlySetting.cs 
+  public static class MapOnlySetting
+  {
+	   public static void Register()
+	   {
+		    MapExtension.Create<A, A_Display>()
+				        .Ignore(x => x.DisplayName)
+					    .Add(source => source.Status, destination => destination.ProgressStatus);
+	   }
+  }
+
+  // Call Register method in Application_Start
+  protected void Application_Start() 
+  {  
+   MapOnlySetting.Register(); 
+  }
+```
+## Winform, Console...
+```
+// Can add config in the Main method in Program.cs file.
+ static class Program
+ {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+	        // Do the mapping config here
+            MapOnlyConfig.Register();
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new fmMain());
+        } 
+  }
+```
