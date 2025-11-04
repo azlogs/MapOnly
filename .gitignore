@@ -1,12 +1,36 @@
 
-MapOnlyDemoExample/.vs/
-MapOnlyDemoExample/packages/
-MapOnlyDemoExample/MapOnlyExample.Model/bin
-MapOnlyDemoExample/MapOnlyExample.Model/obj
-MapOnlyDemoExample/MapOnlyExample.Service/bin
-MapOnlyDemoExample/MapOnlyExample.Service/obj
-MapOnlyDemoExample/MapOnlyExample.WebDemo/bin
-MapOnlyDemoExample/MapOnlyExample.WebDemo/obj
-MapOnlyDemoExample/MapOnlyExample.WinformDemo/bin
-MapOnlyDemoExample/MapOnlyExample.WinformDemo/obj  
+# Build artifacts
+[Bb]in/
+[Oo]bj/
 *.dll
+*.nupkg
+*.snupkg
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+
+# NuGet Packages
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*

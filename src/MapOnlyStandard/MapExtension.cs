@@ -8,28 +8,31 @@ using System.Reflection;
 namespace MapOnly
 {
     /// <summary>
-    /// Map object extension
+    /// Map object extension methods for mapping between objects
     /// </summary>
     public static class MapExtension
     {
-        private static Dictionary<Guid, MapSetting> MapSetting = new Dictionary<Guid, MapSetting>();
-        private const string SourceDestinationNOTNULL = "Source or Destination can not be null.";
+        private static readonly Dictionary<Guid, MapSetting> MapSettings = new Dictionary<Guid, MapSetting>();
+        private const string SourceDestinationNotNull = "Source and Destination cannot be null.";
+        private const string PropertyNotFound = "Source doesn't have property \"{0}\".";
 
         // simple map
         #region Simple map
         /// <summary>
-        /// Mapping 2 objects ( from "source" to "destination") has the same properties
+        /// Mapping 2 objects (from "source" to "destination") that have the same properties
         /// </summary>
         /// <typeparam name="TSource">Class type of source object</typeparam>
         /// <typeparam name="TDestination">Class type of destination object</typeparam>
         /// <param name="source">Source Object</param>
         /// <param name="destination">Destination Object</param>
-        /// <returns>Destionation object</returns>
+        /// <returns>Destination object</returns>
         private static TDestination SimpleMap<TSource, TDestination>(this TSource source, TDestination destination)
+            where TSource : class
+            where TDestination : class
         {
             if (source == null || destination == null)
             {
-                throw new ArgumentException(SourceDestinationNOTNULL);
+                throw new ArgumentNullException(nameof(source), SourceDestinationNotNull);
             }
 
             // get all properties
@@ -45,10 +48,7 @@ namespace MapOnly
                 // get attribute 
                 foreach (object attribute in attributes)
                 {
-                    var mapAttribute = attribute as MapAttribute;
-                    if (mapAttribute == null) continue;
-
-                    if (mapAttribute.Ignored)
+                    if (attribute is MapAttribute mapAttribute && mapAttribute.Ignored)
                     {
                         isIgnored = true;
                         break;
@@ -59,12 +59,12 @@ namespace MapOnly
 
                 var sourceProperty = sourceProperties.FirstOrDefault(x => x.Name == property.Name);
 
-                if (sourceProperty == null || property.Equals(sourceProperties))
+                if (sourceProperty == null)
                 {
-                    throw new ArgumentException($"Source doesn't have property \"{property.Name}\"");
+                    throw new ArgumentException(string.Format(PropertyNotFound, property.Name));
                 }
 
-                object value = sourceProperty.GetValue(source, null);
+                object? value = sourceProperty.GetValue(source, null);
                 property.SetValue(destination, value);
             }
 
@@ -75,18 +75,25 @@ namespace MapOnly
         #region Map
 
         /// <summary>
-        /// Mapping object "source" to "destination", base on the mapping setting
+        /// Mapping object "source" to "destination", based on the mapping setting
         /// </summary>
         /// <typeparam name="TSource">Class type of source object</typeparam>
         /// <typeparam name="TDestination">Class type of destination object</typeparam>
         /// <param name="source">Source Object</param>
         /// <param name="destination">Destination Object</param>
-        /// <returns>Destionation object</returns>
+        /// <returns>Destination object</returns>
         public static TDestination Map<TSource, TDestination>(this TSource source, TDestination destination)
+            where TSource : class
+            where TDestination : class
         {
-            if (source == null || destination == null)
+            if (source == null)
             {
-                throw new ArgumentException(SourceDestinationNOTNULL);
+                throw new ArgumentNullException(nameof(source), SourceDestinationNotNull);
+            }
+
+            if (destination == null)
+            {
+                throw new ArgumentNullException(nameof(destination), SourceDestinationNotNull);
             }
 
             // check exist setting 
@@ -100,21 +107,17 @@ namespace MapOnly
             // do mapping
             foreach (var property in destinationProperties)
             {
-                PropertyInfo sourceProperty = null;
-                var attributes = property.GetCustomAttributes();
+                PropertyInfo? sourceProperty = null;
                 bool isIgnored = false;
 
-                // get attribute 
-                foreach (object attribute in attributes)
+                // Check if destination property has ignore attribute
+                var destinationAttributes = property.GetCustomAttributes();
+                foreach (object attribute in destinationAttributes)
                 {
-                    MapAttribute mapAttribute = attribute as MapAttribute;
-                    if (mapAttribute != null)
+                    if (attribute is MapAttribute mapAttribute && mapAttribute.Ignored)
                     {
-                        if (mapAttribute.Ignored)
-                        {
-                            isIgnored = true;
-                            break;
-                        }
+                        isIgnored = true;
+                        break;
                     }
                 }
 
@@ -137,8 +140,11 @@ namespace MapOnly
                             property.SetValue(destination, p.Value);
                             continue;
                         }
-                        //else if..
-                        sourceProperty = sourceProperties.Single(x => x.Name == p.FromProperty);
+                        
+                        if (!string.IsNullOrEmpty(p.FromProperty))
+                        {
+                            sourceProperty = sourceProperties.FirstOrDefault(x => x.Name == p.FromProperty);
+                        }
                     }
                 }
 
@@ -149,14 +155,48 @@ namespace MapOnly
 
                 if (sourceProperty == null)
                 {
-                    throw new ArgumentException($"Source doesn't have property \"{property.Name}\"");
+                    // Skip properties that don't exist in source
+                    continue;
                 }
 
-                object value = sourceProperty.GetValue(source, null);
+                // Check if source property has ignore attribute
+                var sourceAttributes = sourceProperty.GetCustomAttributes();
+                foreach (object attribute in sourceAttributes)
+                {
+                    if (attribute is MapAttribute mapAttribute && mapAttribute.Ignored)
+                    {
+                        isIgnored = true;
+                        break;
+                    }
+                }
+
+                if (isIgnored) continue;
+
+                object? value = sourceProperty.GetValue(source, null);
                 property.SetValue(destination, value);
             }
 
             return destination;
+        }
+
+        /// <summary>
+        /// Maps a source object to a new destination object instance
+        /// </summary>
+        /// <typeparam name="TSource">Class type of source object</typeparam>
+        /// <typeparam name="TDestination">Class type of destination object</typeparam>
+        /// <param name="source">Source Object</param>
+        /// <returns>New destination object with mapped values</returns>
+        public static TDestination Map<TSource, TDestination>(this TSource source)
+            where TSource : class
+            where TDestination : class, new()
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source), SourceDestinationNotNull);
+            }
+
+            var destination = new TDestination();
+            return Map(source, destination);
         }
 
         #endregion
@@ -164,16 +204,16 @@ namespace MapOnly
         #region Setting
 
         /// <summary>
-        /// Create a mapping between Source and destionation
+        /// Create a mapping configuration between Source and Destination types
         /// </summary>
         /// <typeparam name="TSource">Source Type</typeparam>
         /// <typeparam name="TDestination">Destination Type</typeparam>
-        /// <returns>IMapObject</returns>
+        /// <returns>IMapObject for fluent configuration</returns>
         public static IMapObject<TSource, TDestination> Create<TSource, TDestination>()
         {
             Type sourceType = typeof(TSource);
             Type destinationType = typeof(TDestination);
-            var map = MapSetting.FirstOrDefault(x => x.Value.Source == sourceType && x.Value.Destination == destinationType);
+            var map = MapSettings.FirstOrDefault(x => x.Value.Source == sourceType && x.Value.Destination == destinationType);
 
             // check exist.
             if (map.Key != Guid.Empty)
@@ -187,7 +227,7 @@ namespace MapOnly
             Guid settingId = Guid.NewGuid();
 
             // add to setting
-            MapSetting[settingId] = new MapSetting
+            MapSettings[settingId] = new MapSetting
             {
                 Destination = destinationType,
                 Source = sourceType
@@ -200,30 +240,47 @@ namespace MapOnly
         }
 
         /// <summary>
-        /// Remove a mapping
+        /// Remove a mapping configuration
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="mapObject"></param>
+        /// <typeparam name="TSource">Source type</typeparam>
+        /// <typeparam name="TDestination">Destination type</typeparam>
+        /// <param name="mapObject">Map object to remove</param>
         /// <returns>IMapObject</returns>
         public static IMapObject<TSource, TDestination> Remove<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject)
         {
+            if (mapObject == null)
+            {
+                throw new ArgumentNullException(nameof(mapObject));
+            }
+
             var map = mapObject.GetMapSettingByMapObject();
-            MapSetting.Remove(map.Key);
+            MapSettings.Remove(map.Key);
 
             return mapObject;
         }
 
         /// <summary>
-        /// Add ignored property
+        /// Add a property to the ignore list
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="mapObject"></param>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static IMapObject<TSource, TDestination> Ignore<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject, Expression<Func<TDestination, object>> expression)
+        /// <typeparam name="TSource">Source type</typeparam>
+        /// <typeparam name="TDestination">Destination type</typeparam>
+        /// <param name="mapObject">Map object</param>
+        /// <param name="expression">Expression to select the property to ignore</param>
+        /// <returns>IMapObject for fluent configuration</returns>
+        public static IMapObject<TSource, TDestination> Ignore<TSource, TDestination>(
+            this IMapObject<TSource, TDestination> mapObject, 
+            Expression<Func<TDestination, object>> expression)
         {
+            if (mapObject == null)
+            {
+                throw new ArgumentNullException(nameof(mapObject));
+            }
+
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
             var map = mapObject.GetMapSettingByMapObject();
             string propertyName = GetPropertyName(expression);
 
@@ -244,24 +301,44 @@ namespace MapOnly
         }
 
         /// <summary>
-        /// Add property into mapping setting 
+        /// Add a property mapping between source and destination
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="mapObject"></param>
-        /// <param name="sourceExpression"></param>
-        /// <param name="destinationExpression"></param>
-        /// <returns></returns>
-        public static IMapObject<TSource, TDestination> Add<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject,
-            Expression<Func<TSource, object>> sourceExpression, Expression<Func<TDestination, object>> destinationExpression)
+        /// <typeparam name="TSource">Source type</typeparam>
+        /// <typeparam name="TDestination">Destination type</typeparam>
+        /// <param name="mapObject">Map object</param>
+        /// <param name="sourceExpression">Expression to select the source property</param>
+        /// <param name="destinationExpression">Expression to select the destination property</param>
+        /// <returns>IMapObject for fluent configuration</returns>
+        public static IMapObject<TSource, TDestination> Add<TSource, TDestination>(
+            this IMapObject<TSource, TDestination> mapObject,
+            Expression<Func<TSource, object>> sourceExpression, 
+            Expression<Func<TDestination, object>> destinationExpression)
         {
+            if (mapObject == null)
+            {
+                throw new ArgumentNullException(nameof(mapObject));
+            }
+
+            if (sourceExpression == null)
+            {
+                throw new ArgumentNullException(nameof(sourceExpression));
+            }
+
+            if (destinationExpression == null)
+            {
+                throw new ArgumentNullException(nameof(destinationExpression));
+            }
+
             var map = GetMapSetting<TSource, TDestination>();
-            if (map.Key == Guid.Empty) throw new ArgumentException($"Setting not found (Source: \"{ typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\").");
+            if (map.Key == Guid.Empty) 
+            {
+                throw new InvalidOperationException($"Mapping not found. Source: \"{typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\". Please call Create<TSource, TDestination>() first.");
+            }
 
             string toProperty = GetPropertyName(destinationExpression);
 
             // remove if exist in ignore listing
-            if (map.Value.IgnoreProperties.Any(x => x == toProperty))
+            if (map.Value.IgnoreProperties.Contains(toProperty))
             {
                 map.Value.IgnoreProperties.Remove(toProperty);
             }
@@ -272,7 +349,6 @@ namespace MapOnly
                 map.Value.MapProperties.Remove(mapProperty);
             }
 
-            // TODO: need to check the same type
             string fromProperty = GetPropertyName(sourceExpression);
             map.Value.MapProperties.Add(new MapProperty
             {
@@ -285,24 +361,39 @@ namespace MapOnly
         }
 
         /// <summary>
-        /// Mapping a property to a value
+        /// Map a destination property to a constant value
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="mapObject"></param>
-        /// <param name="destinationExpression"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static IMapObject<TSource, TDestination> Add<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject,
-            Expression<Func<TDestination, object>> destinationExpression, object value)
+        /// <typeparam name="TSource">Source type</typeparam>
+        /// <typeparam name="TDestination">Destination type</typeparam>
+        /// <param name="mapObject">Map object</param>
+        /// <param name="destinationExpression">Expression to select the destination property</param>
+        /// <param name="value">Value to set</param>
+        /// <returns>IMapObject for fluent configuration</returns>
+        public static IMapObject<TSource, TDestination> Add<TSource, TDestination>(
+            this IMapObject<TSource, TDestination> mapObject,
+            Expression<Func<TDestination, object>> destinationExpression, 
+            object? value)
         {
+            if (mapObject == null)
+            {
+                throw new ArgumentNullException(nameof(mapObject));
+            }
+
+            if (destinationExpression == null)
+            {
+                throw new ArgumentNullException(nameof(destinationExpression));
+            }
+
             var map = GetMapSetting<TSource, TDestination>();
-            if (map.Key == Guid.Empty) throw new ArgumentException($"Setting not found (Source: \"{ typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\").");
+            if (map.Key == Guid.Empty) 
+            {
+                throw new InvalidOperationException($"Mapping not found. Source: \"{typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\". Please call Create<TSource, TDestination>() first.");
+            }
 
             string toProperty = GetPropertyName(destinationExpression);
 
             // remove added before
-            var mapProperty = map.Value.MapProperties.FirstOrDefault(x => x.FromProperty == toProperty);
+            var mapProperty = map.Value.MapProperties.FirstOrDefault(x => x.ToProperty == toProperty);
             if (mapProperty != null)
             {
                 map.Value.MapProperties.Remove(mapProperty);
@@ -319,14 +410,19 @@ namespace MapOnly
         }
 
         /// <summary>
-        /// Ignored all the seting.
+        /// Clear all mapping settings and enable automatic mapping for all properties
         /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <param name="mapObject"></param>
-        /// <returns></returns>
-        private static IMapObject<TSource, TDestination> MappAll<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject)
+        /// <typeparam name="TSource">Source type</typeparam>
+        /// <typeparam name="TDestination">Destination type</typeparam>
+        /// <param name="mapObject">Map object</param>
+        /// <returns>IMapObject for fluent configuration</returns>
+        private static IMapObject<TSource, TDestination> MapAll<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject)
         {
+            if (mapObject == null)
+            {
+                throw new ArgumentNullException(nameof(mapObject));
+            }
+
             var map = GetMapSetting<TSource, TDestination>();
             if (map.Key == Guid.Empty) return mapObject;
             map.Value.Clear();
@@ -336,14 +432,24 @@ namespace MapOnly
         }
         #endregion
 
-        #region Private method
+        #region Private methods
 
         private static string GetPropertyName<T>(Expression<Func<T, object>> expression)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException(nameof(expression));
+            }
+
             var body = expression.Body as MemberExpression;
             if (body == null)
             {
                 body = ((UnaryExpression)expression.Body).Operand as MemberExpression;
+            }
+
+            if (body == null)
+            {
+                throw new ArgumentException("Expression must be a member access expression", nameof(expression));
             }
 
             return body.Member.Name;
@@ -353,24 +459,24 @@ namespace MapOnly
         {
             Type sourceType = typeof(TSource);
             Type destinationType = typeof(TDestination);
-            var map = MapSetting.FirstOrDefault(x => x.Value.Source == sourceType && x.Value.Destination == destinationType);
-
-            //if (map.Key == Guid.Empty)
-            //{
-            //    throw new ArgumentException($"Setting not found (Source: \"{sourceType.Name}\", Destination: \"{destinationType.Name}\").");
-            //}
+            var map = MapSettings.FirstOrDefault(x => x.Value.Source == sourceType && x.Value.Destination == destinationType);
 
             return map;
         }
 
         private static KeyValuePair<Guid, MapSetting> GetMapSettingByMapObject<TSource, TDestination>(this IMapObject<TSource, TDestination> mapObject)
         {
-            if (!MapSetting.ContainsKey(mapObject.MappingSettingId))
+            if (mapObject == null)
             {
-                throw new ArgumentException($"Setting not found (Source: \"{ typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\").");
+                throw new ArgumentNullException(nameof(mapObject));
             }
 
-            return MapSetting.Single(x => x.Key == mapObject.MappingSettingId);
+            if (!MapSettings.ContainsKey(mapObject.MappingSettingId))
+            {
+                throw new InvalidOperationException($"Mapping setting not found. Source: \"{typeof(TSource).Name}\", Destination: \"{typeof(TDestination).Name}\".");
+            }
+
+            return MapSettings.Single(x => x.Key == mapObject.MappingSettingId);
         }
 
         #endregion 

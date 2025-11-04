@@ -1,9 +1,0 @@
-D:\Projects\MapOnlyDemo\MapOnlyStandard\bin\Release\netstandard2.0\MapOnly.deps.json
-D:\Projects\MapOnlyDemo\MapOnlyStandard\bin\Release\netstandard2.0\MapOnly.dll
-D:\Projects\MapOnlyDemo\MapOnlyStandard\bin\Release\netstandard2.0\MapOnly.pdb
-D:\Projects\MapOnlyDemo\MapOnlyStandard\bin\Release\netstandard2.0\MapOnly.xml
-D:\Projects\MapOnlyDemo\MapOnlyStandard\obj\Release\netstandard2.0\MapOnly.AssemblyInfoInputs.cache
-D:\Projects\MapOnlyDemo\MapOnlyStandard\obj\Release\netstandard2.0\MapOnly.AssemblyInfo.cs
-D:\Projects\MapOnlyDemo\MapOnlyStandard\obj\Release\netstandard2.0\MapOnly.dll
-D:\Projects\MapOnlyDemo\MapOnlyStandard\obj\Release\netstandard2.0\MapOnly.pdb
-D:\Projects\MapOnlyDemo\MapOnlyStandard\obj\Release\netstandard2.0\MapOnly.csprojAssemblyReference.cache

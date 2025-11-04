@@ -3,7 +3,7 @@ using System;
 
 namespace MapOnly
 {
-    internal class MapObject<TSource, TDestination>: IMapObject<TSource, TDestination>
+    internal sealed class MapObject<TSource, TDestination> : IMapObject<TSource, TDestination>
     {
         public MapObject()
         {
@@ -14,21 +14,9 @@ namespace MapOnly
             MappingSettingId = settingId;
         }
 
-        public Type Source
-        {
-            get
-            {
-                return typeof(TSource);
-            }
-        }
+        public Type Source => typeof(TSource);
 
-        public Type Destination
-        {
-            get
-            {
-                return typeof(TDestination);
-            }
-        }
+        public Type Destination => typeof(TDestination);
 
         public Guid MappingSettingId { get; set; }
     }
