@@ -108,11 +108,11 @@ namespace MapOnly
             foreach (var property in destinationProperties)
             {
                 PropertyInfo? sourceProperty = null;
-                var attributes = property.GetCustomAttributes();
                 bool isIgnored = false;
 
-                // get attribute 
-                foreach (object attribute in attributes)
+                // Check if destination property has ignore attribute
+                var destinationAttributes = property.GetCustomAttributes();
+                foreach (object attribute in destinationAttributes)
                 {
                     if (attribute is MapAttribute mapAttribute && mapAttribute.Ignored)
                     {
@@ -155,8 +155,22 @@ namespace MapOnly
 
                 if (sourceProperty == null)
                 {
-                    throw new ArgumentException(string.Format(PropertyNotFound, property.Name));
+                    // Skip properties that don't exist in source
+                    continue;
                 }
+
+                // Check if source property has ignore attribute
+                var sourceAttributes = sourceProperty.GetCustomAttributes();
+                foreach (object attribute in sourceAttributes)
+                {
+                    if (attribute is MapAttribute mapAttribute && mapAttribute.Ignored)
+                    {
+                        isIgnored = true;
+                        break;
+                    }
+                }
+
+                if (isIgnored) continue;
 
                 object? value = sourceProperty.GetValue(source, null);
                 property.SetValue(destination, value);
