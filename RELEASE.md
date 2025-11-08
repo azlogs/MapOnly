@@ -32,13 +32,19 @@ The project is configured to automatically build and publish NuGet packages to N
    - It will:
      - Build the project for all target frameworks
      - Run all tests
-     - Pack the NuGet package
-     - Publish to NuGet.org
-     - Upload the package as a build artifact
+     - Pack the NuGet package (.nupkg)
+     - Pack the symbol package (.snupkg) with debugging symbols
+     - Publish both packages to NuGet.org
+     - Upload both packages as build artifacts for download
 
 4. **Verify the Release**
    - Check the Actions tab in GitHub to see the workflow run
-   - Once complete, verify the package is available on NuGet.org: https://www.nuget.org/packages/MapOnly/
+   - Once complete, verify the packages are available on NuGet.org: https://www.nuget.org/packages/MapOnly/
+   - Download packages from the workflow run:
+     - Go to the Actions tab and select the workflow run
+     - Scroll to the bottom to find the "Artifacts" section
+     - Download `nuget-package` (contains .nupkg file)
+     - Download `symbol-package` (contains .snupkg file with debugging symbols)
 
 ### Manual Trigger
 
