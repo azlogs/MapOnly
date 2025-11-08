@@ -33,13 +33,22 @@ jobs:
       run: dotnet test src/MapOnly.Tests/MapOnly.Tests.csproj --configuration Release --no-build --verbosity normal
       
     - name: Pack NuGet package
-      run: dotnet pack src/MapOnlyStandard/MapOnly.csproj --configuration Release --no-build --output ./artifacts
+      run: dotnet pack src/MapOnlyStandard/MapOnly.csproj --configuration Release --no-build --output ./artifacts --include-symbols --include-source
       
-    - name: Publish to NuGet.org
+    - name: Publish packages to NuGet.org
       run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
       
-    - name: Upload artifacts
+    - name: Publish symbol packages to NuGet.org
+      run: dotnet nuget push ./artifacts/*.snupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      
+    - name: Upload NuGet package artifact
       uses: actions/upload-artifact@v4
       with:
         name: nuget-package
         path: ./artifacts/*.nupkg
+      
+    - name: Upload symbol package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: symbol-package
+        path: ./artifacts/*.snupkg
